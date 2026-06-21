@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shaghalny — Interview Prep</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#3b82f6', dark: '#1d4ed8' },
+            success: '#22c55e',
+            warning: '#f97316',
+            danger: '#ef4444',
+            score: '#a855f7',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-2xl font-bold text-brand">شغلني</span>
+      <span class="text-slate-400 text-sm">AI Interview Prep</span>
+    </div>
+    <div id="session-badge" class="hidden text-xs text-slate-500 font-mono"></div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-10 space-y-8">
+
+    <!-- ── PANEL 1: Input ──────────────────────────────────────────────── -->
+    <section id="panel-input">
+      <h1 class="text-2xl font-bold mb-1">Prepare for your interview</h1>
+      <p class="text-slate-400 text-sm mb-6">Upload your CV and paste the job description. We'll generate the 5 hardest questions you'll face.</p>
+
+      <form id="form-input" class="space-y-5">
+
+        <!-- CV Upload -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Your CV <span class="text-slate-500">(PDF or TXT)</span></label>
+          <div id="cv-dropzone"
+               class="border-2 border-dashed border-slate-700 rounded-xl p-6 text-center cursor-pointer hover:border-brand transition-colors"
+               onclick="document.getElementById('cv-file').click()">
+            <div id="cv-placeholder">
+              <div class="text-3xl mb-2">📄</div>
+              <p class="text-slate-400 text-sm">Click to upload or drag & drop</p>
+              <p class="text-slate-600 text-xs mt-1">PDF or plain text, max 50KB extracted</p>
+            </div>
+            <div id="cv-chosen" class="hidden text-success text-sm font-medium"></div>
+            <input id="cv-file" type="file" accept=".pdf,.txt,.md,text/plain,application/pdf" class="hidden" />
+          </div>
+        </div>
+
+        <!-- JD -->
+        <div>
+          <label for="jd-text" class="block text-sm font-medium mb-2">Job Description</label>
+          <textarea id="jd-text" rows="7"
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-brand resize-none"
+            placeholder="Paste the full job description here…"></textarea>
+        </div>
+
+        <!-- Company -->
+        <div>
+          <label for="company-name" class="block text-sm font-medium mb-2">
+            Company Name <span class="text-slate-500 font-normal">(optional — used to find known interview patterns)</span>
+          </label>
+          <input id="company-name" type="text"
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-brand"
+            placeholder="e.g. Netflix, Stripe, Airbnb" />
+        </div>
+
+        <!-- Submit -->
+        <button id="btn-generate" type="submit"
+          class="w-full bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-xl transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+          Generate My 5 Hardest Questions
+        </button>
+
+      </form>
+
+      <!-- Loading state -->
+      <div id="input-loading" class="hidden mt-6 text-center space-y-3">
+        <div class="loader mx-auto"></div>
+        <p id="loading-msg" class="text-slate-400 text-sm">Analysing your CV and JD…</p>
+      </div>
+    </section>
+
+    <!-- ── PANEL 2: Interview ──────────────────────────────────────────── -->
+    <section id="panel-interview" class="hidden">
+      <div class="flex items-center justify-between mb-1">
+        <h2 class="text-2xl font-bold">Your 5 Questions</h2>
+        <span class="text-xs text-slate-500 font-mono" id="session-id-display"></span>
+      </div>
+      <p class="text-slate-400 text-sm mb-6">Answer each question below. Be thorough — you'll be scored on technical accuracy, completeness, and communication.</p>
+
+      <div id="questions-container" class="space-y-6"></div>
+
+      <button id="btn-submit-answers"
+        class="mt-8 w-full bg-success hover:bg-green-600 text-white font-semibold py-3 rounded-xl transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        disabled>
+        Submit All Answers
+      </button>
+    </section>
+
+    <!-- ── PANEL 3: Evaluation ─────────────────────────────────────────── -->
+    <section id="panel-eval" class="hidden">
+      <h2 class="text-2xl font-bold mb-1">Your Evaluation</h2>
+      <p class="text-slate-400 text-sm mb-6">Scores arrive as each answer is evaluated. Calibrated to the seniority level in the JD.</p>
+
+      <div id="scores-container" class="space-y-6"></div>
+
+      <!-- Overall (shown after all 5) -->
+      <div id="overall-card" class="hidden mt-8 bg-slate-900 border border-slate-700 rounded-2xl p-6 text-center">
+        <p class="text-slate-400 text-sm mb-2">Overall Score</p>
+        <div id="overall-score" class="text-6xl font-bold text-score"></div>
+        <p class="text-slate-500 text-xs mt-2">out of 100</p>
+        <button onclick="location.reload()"
+          class="mt-6 px-6 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm transition-colors">
+          Start New Session
+        </button>
+      </div>
+
+      <!-- Error / Retry -->
+      <div id="error-card" class="hidden mt-6 bg-red-950 border border-danger rounded-2xl p-5">
+        <p class="text-danger font-semibold mb-1">Something went wrong</p>
+        <p id="error-msg" class="text-red-300 text-sm mb-4"></p>
+        <button id="btn-retry"
+          class="px-5 py-2 bg-danger hover:bg-red-700 text-white rounded-xl text-sm font-medium transition-colors">
+          Retry
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

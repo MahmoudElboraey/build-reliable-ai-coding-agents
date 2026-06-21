@@ -1,0 +1,73 @@
+{
+  "process_id": "demo-001",
+  "process_name": "4-stage handover demo: resilient-systems poem",
+  "status": "COMPLETED",
+  "current_stage": "done",
+  "retry_count": 0,
+  "max_retries": 3,
+  "created_at": "2026-06-20T00:00:00Z",
+  "updated_at": "2026-06-20T12:53:39Z",
+  "stages": [
+    {
+      "name": "planner",
+      "status": "done",
+      "started_at": "2026-06-20T12:51:37Z",
+      "completed_at": "2026-06-20T12:51:37Z",
+      "output_ref": null
+    },
+    {
+      "name": "builder",
+      "status": "done",
+      "started_at": "2026-06-20T12:52:07Z",
+      "completed_at": "2026-06-20T12:52:07Z",
+      "output_ref": null
+    },
+    {
+      "name": "reviewer",
+      "status": "done",
+      "started_at": "2026-06-20T12:53:03Z",
+      "completed_at": "2026-06-20T12:53:03Z",
+      "output_ref": null
+    },
+    {
+      "name": "finalizer",
+      "status": "done",
+      "started_at": "2026-06-20T12:53:39Z",
+      "completed_at": "2026-06-20T12:53:39Z",
+      "output_ref": null
+    }
+  ],
+  "artifacts": {
+    "plan": "artifacts/plan.md",
+    "draft": "artifacts/draft.md",
+    "reviewed": "artifacts/final_poem.md",
+    "final_report": "artifacts/FINAL_REPORT.md"
+  },
+  "history": [
+    {
+      "ts": "2026-06-20T12:51:37Z",
+      "event": "stage_completed",
+      "stage": "planner",
+      "summary": "Picked resilient-systems theme (stress/failure -> absorb/adapt) with AABB rhyme scheme; wrote brief for Builder."
+    },
+    {
+      "ts": "2026-06-20T12:52:07Z",
+      "event": "stage_completed",
+      "stage": "builder",
+      "summary": "Wrote 4-line AABB draft poem depicting load/fault stress resolving into mesh rerouting and quiet healing."
+    },
+    {
+      "ts": "2026-06-20T12:53:03Z",
+      "event": "stage_completed",
+      "stage": "reviewer",
+      "summary": "Tightened meter, removed 'rerouting/reroutes' repetition in line 3, and smoothed line 4's rhythm for a cleaner AABB cadence."
+    },
+    {
+      "ts": "2026-06-20T12:53:39Z",
+      "event": "process_completed",
+      "stage": "finalizer",
+      "summary": "Assembled closing report from full history and reviewed poem; pipeline complete."
+    }
+  ],
+  "resume_instructions": "Find first stage in `stages` with status != 'done'. Spawn the agent described in stages/<name>.md, give it this file's path + process_id. That agent does its work, writes its output into artifacts/, then updates THIS file (its own stage entry, history[], updated_at, and current_stage to the next pending stage). If current_stage is 'finalizer' and it completes, status becomes 'COMPLETED'. If any stage agent errors, it sets status='FAILED', stage.status='failed', increments retry_count, and current_stage stays put for retry (unless retry_count >= max_retries, then it stays FAILED for human review)."
+}

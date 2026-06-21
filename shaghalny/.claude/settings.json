@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "TaskUpdate",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "status=$(jq -r '.tool_input.status // empty'); if [ \"$status\" = \"completed\" ]; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"TaskUpdate set status=completed. Per the Update Protocol, update knowledge_base/sprint_plan.md (tracker) and the relevant knowledge_base/*.md file (decisions or lessons) before moving on.\"}}'; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
